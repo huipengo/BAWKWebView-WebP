@@ -6,7 +6,6 @@
 //  Copyright © 2017年 boai. All rights reserved.
 //
 
-
 /*!
  *  获取屏幕宽度和高度
  */
@@ -20,7 +19,7 @@
 
 @interface BAWebpController ()
 
-@property (nonatomic,strong)WKWebView *wkWebview;
+@property (nonatomic, strong) WKWebView *wkWebview;
 
 @end
 
@@ -28,17 +27,17 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = UIColor.whiteColor;
     [self setupUI];
 }
 
 - (void)setupUI {
-    self.wkWebview.hidden = NO;
-    
-    [self.view setBackgroundColor:[UIColor whiteColor]];
+    self.view.backgroundColor = UIColor.whiteColor;
     [self ba_registerURLProtocol];
     [self.view addSubview:self.wkWebview];
-    [self.wkWebview loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:self.urlString]]];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.urlString]
+                                             cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
+                                         timeoutInterval:0.0f];
+    [self.wkWebview loadRequest:request];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -51,7 +50,6 @@ BOOL beforeiOS(CGFloat aVersion) {
     return UIDevice.currentDevice.systemVersion.floatValue < aVersion;
 }
 
-
 - (void)ba_registerURLProtocol {
     // 新版WebKit内核已经支持webp
     if (beforeiOS(14)) {
@@ -62,7 +60,7 @@ BOOL beforeiOS(CGFloat aVersion) {
     }
 }
 
-- (void)dealloc{
+- (void)dealloc {
     if (beforeiOS(14)) {
         [NSURLProtocol unregisterClass:NSClassFromString(@"BAURLSessionProtocol")];
         // 移除 registerScheme
@@ -73,7 +71,7 @@ BOOL beforeiOS(CGFloat aVersion) {
 
 - (WKWebView *)wkWebview {
     if (!_wkWebview) {
-        _wkWebview = [[WKWebView alloc]initWithFrame:CGRectZero];
+        _wkWebview = [[WKWebView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     } return _wkWebview;
 }
 
